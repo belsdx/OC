@@ -1,0 +1,15 @@
+import requests
+
+BASE_URL = "http://127.0.0.1:5000"
+
+# Test generating factorials
+response = requests.get(f"{BASE_URL}/factorials", params={"n": 5})
+print("Factorials:", response.json())  # Output: [1, 2, 6, 24, 120]
+
+# Test removing duplicates
+response = requests.post(f"{BASE_URL}/remove_duplicates", json={"numbers": [1, 2, 2, 3, 4, 3]})
+print("Remove Duplicates:", response.json())  # Output: [1, 2, 3, 4]
+
+# Test reversing a linked list
+response = requests.post(f"{BASE_URL}/reverse_linked_list", json={"list": [1, 2, 3]})
+print("Reverse Linked List:", response.json())  # Output: [3, 2, 1]
