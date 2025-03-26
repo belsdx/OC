@@ -1,0 +1,65 @@
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+# 1. Generate the first n factorials
+@app.route('/factorials', methods=['GET'])
+def get_factorials():
+    n = int(request.args.get('n', 1))  # Get the value of n from query parameters
+    result = []
+    factorial = 1
+    for i in range(1, n + 1):
+        factorial *= i  # Calculate the current factorial
+        result.append(factorial)  # Add the factorial to the list
+    return jsonify(result)  # Return the result in JSON format
+
+# 2. Remove duplicate elements
+@app.route('/remove_duplicates', methods=['POST'])
+def remove_duplicates():
+    data = request.json.get('numbers', [])  # Get the array from the request body
+    result = []
+    for num in data:
+        if num not in result:  # Check for duplicate elements
+            result.append(num)
+    return jsonify(result)
+
+# 3. Reverse a linked list
+class Node:
+    def __init__(self, value):
+        self.value = value  # The value of the node
+        self.next = None    # Pointer to the next node
+
+def reverse_linked_list(head):
+    if head is None or head.next is None:  # Base case: the list is empty or has only one node
+        return head
+    new_head = reverse_linked_list(head.next)  # Recursively reverse the rest of the list
+    head.next.next = head  # Point the next node back to the current node
+    head.next = None  # Disconnect the current node from the rest of the list
+    return new_head
+
+@app.route('/reverse_linked_list', methods=['POST'])
+def reverse_linked_list_api():
+    data = request.json.get('list', [])  # Get the linked list data from the request body
+    if not data:
+        return jsonify([])
+
+    # Create a linked list
+    head = Node(data[0])
+    current = head
+    for value in data[1:]:
+        current.next = Node(value)
+        current = current.next
+
+    # Reverse the linked list
+    reversed_head = reverse_linked_list(head)
+
+    # Convert the reversed linked list into an array
+    result = []
+    while reversed_head:
+        result.append(reversed_head.value)
+        reversed_head = reversed_head.next
+    return jsonify(result)
+
+# Start the server
+if __name__ == '__main__':
+    app.run(debug=True)
